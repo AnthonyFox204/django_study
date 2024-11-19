@@ -11,7 +11,6 @@ from . forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswo
 import DjangoProjectTest.settings as settings
 
 
-#LoginUser#Start####################################################################################
 def login_user(request: HttpRequest):
     if request.method == 'POST':
         form = LoginUserForm(request.POST)
@@ -39,19 +38,12 @@ class LoginUser(LoginView):
         'title': 'Авторизация',
     }
 
-    # def get_success_url(self):
-    #     return reverse_lazy('home')
-#LoginUser#End######################################################################################
 
-
-#LogoutUser#Start###################################################################################
 def logout_user(request: HttpRequest):
     logout(request)
     return redirect('users:login')
-#LogoutUser#End#####################################################################################
 
 
-#RegisterUser#Start#################################################################################
 def register_user(request: HttpRequest):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
@@ -77,10 +69,8 @@ class RegisterUser(CreateView):
         'title': 'Регистрация',
     }
     success_url = reverse_lazy('users:login')
-#RegisterUser#End###################################################################################
 
 
-#ProfileUser#Start##################################################################################
 class ProfileUser(LoginRequiredMixin, UpdateView):
     template_name = 'users/profile.html'
     form_class = ProfileUserForm
@@ -94,10 +84,8 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('users:profile')
-#ProfileUser#End####################################################################################
 
 
-#UserPasswordChange#Start###########################################################################
 class UserPasswordChange(PasswordChangeView):
     template_name = 'users/password_change_form.html'
     form_class = UserPasswordChangeForm
@@ -105,4 +93,3 @@ class UserPasswordChange(PasswordChangeView):
     extra_context = {
         'title': 'Изменение пароля',
     }
-#UserPasswordChange#End#############################################################################

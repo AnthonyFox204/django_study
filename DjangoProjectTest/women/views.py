@@ -19,7 +19,6 @@ menu = [
     ]
 
 
-#Index#Start########################################################################################
 def index(request):
     posts = Women.published.all().select_related('cat')
 
@@ -46,7 +45,6 @@ class WomenHome(DataMixin, ListView):
 
     def get_queryset(self):
         return Women.published.all().select_related('cat')
-#Index#End##########################################################################################
 
 
 @login_required
@@ -65,7 +63,6 @@ def about(request: HttpRequest):
     return render(request, 'women/about.html', context=data)
 
 
-#ShowPost#Start#####################################################################################
 def show_post(request, post_slug):
     post = get_object_or_404(Women, slug=post_slug)
 
@@ -91,10 +88,8 @@ class ShowPost(DataMixin, DetailView):
         context = super().get_context_data(**kwargs)
         title = context.get('object').title
         return self.get_mixin_context(context, title=title)
-#ShowPost#End#######################################################################################
 
 
-#AddPage#Start######################################################################################
 def addpage(request: HttpRequest):
     if request.method == 'POST':
         form = AddPostForm(request.POST, request.FILES)
@@ -123,10 +118,8 @@ class AddPage(PermissionRequiredMixin, LoginRequiredMixin, DataMixin, CreateView
         entry = form.save(commit=False)
         entry.author = self.request.user
         return super().form_valid(form)
-#AddPage#End########################################################################################
 
 
-#UpdatePage#Start###################################################################################
 class UpdatePage(PermissionRequiredMixin, DataMixin, UpdateView):
     model = Women
     fields = ('title', 'content', 'photo', 'is_published', 'cat')
@@ -134,10 +127,8 @@ class UpdatePage(PermissionRequiredMixin, DataMixin, UpdateView):
     success_url = reverse_lazy('home')
     title_page = 'Редактирование статьи'
     permission_required = 'women.change_women'
-#UpdatePage#End#####################################################################################
 
 
-#Contact#Start######################################################################################
 @permission_required(perm='women.view_women', raise_exception=True)
 def contact(request):
     return HttpResponse("Обратная связь")
@@ -152,10 +143,8 @@ class ContactFormView(LoginRequiredMixin, DataMixin, FormView):
     def form_valid(self, form):
         print(form.cleaned_data)
         return super().form_valid(form)
-#Contact#End########################################################################################
 
 
-#ShowCategory#Start#################################################################################
 def show_category(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
     posts = Women.published.filter(cat_id=category.pk).select_related('cat')
@@ -183,10 +172,8 @@ class WomenCategory(DataMixin, ListView):
         cat = context.get('posts')[0].cat
         title = f'Категория: {cat.name}'
         return self.get_mixin_context(context, title=title, cat_selected=cat.pk)
-#ShowCategory#End###################################################################################
 
 
-#ShowTags#Start#####################################################################################
 def show_tag_postlist(request, tag_slug):
     tag = get_object_or_404(TagPost, slug=tag_slug)
     posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related('cat')
@@ -214,7 +201,6 @@ class TagPostList(DataMixin, ListView):
         tag = TagPost.objects.get(slug=self.kwargs.get('tag_slug'))
         title = f'Тег: {tag.tag}'
         return self.get_mixin_context(context, title=title)
-#ShowTags#End#######################################################################################
 
 
 def page_not_found(request, exception):
